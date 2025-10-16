@@ -12,7 +12,6 @@ function App() {
       <div className="app">
         <nav style={{ padding: '20px', borderBottom: '1px solid #ccc' }}>
           <Link to="/" style={{ marginRight: '15px' }}>Inicio</Link>
-          <Link to="/register">Registrarse</Link>
         </nav>
 
         <Routes>
