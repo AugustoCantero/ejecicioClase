@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { useNavigate, Link } from 'react-router-dom';
 
 const PersonalInfo = () => {
@@ -9,6 +9,19 @@ const PersonalInfo = () => {
     dateOfBirth: '',
     gender: ''
   });
+  
+  
+  const [isFormValid, setIsFormValid] = useState(false);
+
+ 
+  useEffect(() => {
+    const { firstName, lastName, dateOfBirth, gender } = formData;
+    if (firstName && lastName && dateOfBirth && gender) {
+      setIsFormValid(true);
+    } else {
+      setIsFormValid(false);
+    }
+  }, [formData]); 
 
   const handleChange = (e) => {
     setFormData({
@@ -17,31 +30,29 @@ const PersonalInfo = () => {
     });
   };
 
-  // 🔎 Función para calcular edad según fecha de nacimiento
   const calcularEdad = (fechaNacimiento) => {
     const hoy = new Date();
     const nacimiento = new Date(fechaNacimiento);
     let edad = hoy.getFullYear() - nacimiento.getFullYear();
     const diferenciaMeses = hoy.getMonth() - nacimiento.getMonth();
-
-    if (
-      diferenciaMeses < 0 ||
-      (diferenciaMeses === 0 && hoy.getDate() < nacimiento.getDate())
-    ) {
+    if (diferenciaMeses < 0 || (diferenciaMeses === 0 && hoy.getDate() < nacimiento.getDate())) {
       edad--;
     }
-
     return edad;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (!isFormValid) {
+        alert('Por favor, completa todos los campos.');
+        return;
+    }
+
     const edad = calcularEdad(formData.dateOfBirth);
 
-    // que no sea jubilado
     if (edad < 18 || edad >= 65) {
-      alert('Solo se permiten registros para personas entre 8 y 65 años.');
+      alert('Solo se permiten registros para personas entre 18 y 65 años.');
       return;
     }
 
@@ -52,7 +63,6 @@ const PersonalInfo = () => {
         ...formData
       })
     );
-
     navigate('/register/contact');
   };
 
@@ -60,6 +70,7 @@ const PersonalInfo = () => {
     <form onSubmit={handleSubmit}>
       <h2>Información Personal</h2>
 
+      {}
       <div style={{ marginBottom: '15px' }}>
         <label>Nombre:</label>
         <input
@@ -71,7 +82,6 @@ const PersonalInfo = () => {
           required
         />
       </div>
-
       <div style={{ marginBottom: '15px' }}>
         <label>Apellido:</label>
         <input
@@ -83,7 +93,6 @@ const PersonalInfo = () => {
           required
         />
       </div>
-
       <div style={{ marginBottom: '15px' }}>
         <label>Fecha de Nacimiento:</label>
         <input
@@ -95,7 +104,6 @@ const PersonalInfo = () => {
           required
         />
       </div>
-
       <div style={{ marginBottom: '15px' }}>
         <label>Género:</label>
         <select
@@ -112,11 +120,22 @@ const PersonalInfo = () => {
         </select>
       </div>
 
+      {}
       <div style={{ marginTop: '20px' }}>
         <Link to="/" style={{ marginRight: '10px' }}>
           <button type="button">Cancelar</button>
         </Link>
-        <button type="submit">Siguiente</button>
+        {}
+        <button
+          type="submit"
+          disabled={!isFormValid} 
+          style={{
+            cursor: isFormValid ? 'pointer' : 'not-allowed', 
+            opacity: isFormValid ? 1 : 0.6 
+          }}
+        >
+          Siguiente
+        </button>
       </div>
     </form>
   );
