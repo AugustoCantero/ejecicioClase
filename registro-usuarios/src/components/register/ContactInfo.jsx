@@ -1,4 +1,4 @@
-// components/register/ContactInfo.js
+// components/register/ContactInfo.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
